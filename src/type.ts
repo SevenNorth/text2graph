@@ -1,5 +1,5 @@
 export interface IAnnoConnectionCate {
-    id: number;
+    id: number | string;
     text: string;
 }
 
@@ -9,15 +9,15 @@ export interface IAnnoLabelCate extends IAnnoConnectionCate {
 }
 
 export interface IAnnoLabel {
-    id: number;
-    categoryId: number;
+    id: number | string;
+    categoryId: number | string;
     startIndex: number;
     endIndex: number;
 }
 
 export interface IAnnoConnection {
-    id: number;
-    categoryId: number;
-    fromId: number;
-    toId: number;
+    id: number | string;
+    categoryId: number | string;
+    fromId: number | string;
+    toId: number | string;
 }
