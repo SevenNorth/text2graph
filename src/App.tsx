@@ -33,8 +33,6 @@ const App = () => {
         if (graph.current) {
             return;
         }
-        console.log('🚀-fjf : annoDataToGraphData:');
-
         const data = annoDataToGraphData(
             defalutData.content,
             defalutData.labelCategories,
@@ -70,7 +68,7 @@ const App = () => {
                 nodeClusterBy: 'cluster',
                 clusterNodeStrength: 70,
             },
-            behaviors: ['zoom-canvas', 'drag-canvas'],
+            behaviors: ['zoom-canvas', 'drag-canvas', 'drag-element'],
         });
         graph.current.render();
     };
