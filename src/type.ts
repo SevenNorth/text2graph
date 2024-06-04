@@ -1,9 +1,10 @@
 export interface IAnnoConnectionCate {
     id: number | string;
     text: string;
+    lineColor?: string;
 }
 
-export interface IAnnoLabelCate extends IAnnoConnectionCate {
+export interface IAnnoLabelCate extends Omit<IAnnoConnectionCate, 'lineColor'> {
     color: string;
     borderColor: string;
 }
@@ -20,4 +21,12 @@ export interface IAnnoConnection {
     categoryId: number | string;
     fromId: number | string;
     toId: number | string;
+}
+
+export interface IAnnoData {
+    content: string;
+    labelCategories: IAnnoLabelCate[];
+    connectionCategories: IAnnoConnectionCate[];
+    labels: IAnnoLabel[];
+    connections: IAnnoConnection[];
 }
