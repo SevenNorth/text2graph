@@ -1,6 +1,7 @@
 import { Button, ColorPicker, Flex, Form, Input, Space } from 'antd';
 import { IAnnoData } from '../type';
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import _ from 'lodash';
 
 interface PropsType {
     data: IAnnoData;
@@ -16,7 +17,27 @@ const DataForm = (props: PropsType) => {
         <Form
             form={form}
             name="dynamic_form_nest_item"
-            onFinish={onSubmit}
+            onFinish={(values) => {
+                values.labelCategories = _.map(
+                    values.labelCategories,
+                    (cate, idx) => {
+                        return {
+                            ...cate,
+                            id: cate.id ?? idx,
+                        };
+                    },
+                );
+                values.connectionCategories = _.map(
+                    values.connectionCategories,
+                    (cate, idx) => {
+                        return {
+                            ...cate,
+                            id: cate.id ?? idx,
+                        };
+                    },
+                );
+                onSubmit(values);
+            }}
             autoComplete="off"
             initialValues={data}
             layout="vertical"
@@ -31,6 +52,7 @@ const DataForm = (props: PropsType) => {
                         minRows: 3,
                         maxRows: 10,
                     }}
+                    allowClear
                 />
             </Form.Item>
             <Form.Item label="标签分类">

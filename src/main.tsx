@@ -9,7 +9,7 @@ import './index.less';
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <ConfigProvider theme={theme} locale={zhCN}>
-            <AntdApp component={false}>
+            <AntdApp component={false} message={{ maxCount: 3 }}>
                 <App />
             </AntdApp>
         </ConfigProvider>
