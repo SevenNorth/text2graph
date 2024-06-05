@@ -179,6 +179,7 @@ const App = () => {
 
     const handleAnnoDataChange = (data: IAnnoData) => {
         initAnnotator({ ...data, labels: [], connections: [] });
+        annoData.current = data;
         graph.current?.clear();
     };
 
