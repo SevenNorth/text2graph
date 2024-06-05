@@ -55,7 +55,14 @@ const DataForm = (props: PropsType) => {
                     allowClear
                 />
             </Form.Item>
-            <Form.Item label="标签分类">
+            <Form.Item
+                label="标签分类"
+                rules={[
+                    {
+                        required: true,
+                    },
+                ]}
+            >
                 <Form.List name="labelCategories">
                     {(fields, { add, remove }) => (
                         <>
@@ -103,7 +110,10 @@ const DataForm = (props: PropsType) => {
                                     </Form.Item>
                                     <Form.Item>
                                         <CloseOutlined
-                                            onClick={() => remove(name)}
+                                            onClick={() => {
+                                                fields.length > 1 &&
+                                                    remove(name);
+                                            }}
                                         />
                                     </Form.Item>
                                 </Space>
@@ -158,7 +168,10 @@ const DataForm = (props: PropsType) => {
                                     </Form.Item>
                                     <Form.Item>
                                         <CloseOutlined
-                                            onClick={() => remove(name)}
+                                            onClick={() => {
+                                                fields.length > 1 &&
+                                                    remove(name);
+                                            }}
                                         />
                                     </Form.Item>
                                 </Space>
