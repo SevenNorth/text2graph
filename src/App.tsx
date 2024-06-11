@@ -243,9 +243,50 @@ const App = () => {
         }
         if (cateType === 'label') {
             if (_.isUndefined(itemId) && idxs) {
-                anno.current?.applyAction(
-                    Action.Label.Create(cateId as number, idxs[0], idxs[1]),
+                const action = Action.Label.Create(
+                    cateId as number,
+                    idxs[0],
+                    idxs[1],
                 );
+                anno.current?.applyAction(action);
+                const text = annoData.current.content.slice(idxs[0], idxs[1]);
+                const existNode = _.find(
+                    graph.current?.getNodeData(),
+                    (n) => n.name === text,
+                );
+                let newId;
+                if (anno.current) {
+                    for (const item of anno.current.store.labelRepo) {
+                        if (
+                            item[1].startIndex === idxs[0] &&
+                            item[1].endIndex === idxs[1]
+                        ) {
+                            newId = item[1].id;
+                            break;
+                        }
+                    }
+                }
+                if (!_.isUndefined(newId) && idMap.current) {
+                    if (existNode) {
+                        idMap.current[newId as number] = existNode.id;
+                    } else {
+                        idMap.current[newId as number] = newId as number;
+                        graph.current?.addNodeData([
+                            {
+                                id: String(newId),
+                                name: text,
+                                style: {
+                                    fill: nodeColorMap.current?.[
+                                        cateId as number
+                                    ],
+                                    x: 200 + Math.random() * 100,
+                                    y: 200 + Math.random() * 100,
+                                },
+                            },
+                        ]);
+                        graph.current?.draw();
+                    }
+                }
             } else {
                 anno.current?.applyAction(
                     Action.Label.Update(itemId as number, cateId as number),
@@ -299,6 +340,20 @@ const App = () => {
                         idxs[1],
                     ),
                 );
+                const text = annoData.current.connectionCategories.find(
+                    (c) => c.id === cateId,
+                )?.text;
+                const id = `${idxs[0]}---${cateId}---${idxs[1]}`;
+
+                graph.current?.addEdgeData([
+                    {
+                        id: id,
+                        source: idMap.current?.[idxs[0]].toString() || '',
+                        target: idMap.current?.[idxs[1]].toString() || '',
+                        name: text,
+                    },
+                ]);
+                graph.current?.draw();
             } else {
                 const c = anno.current?.store.connectionRepo.get(
                     itemId as number,
