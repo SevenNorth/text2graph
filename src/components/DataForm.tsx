@@ -25,12 +25,16 @@ const DataForm = (props: PropsType) => {
                         return {
                             ...cate,
                             id: cate.id ?? idx,
-                            color: (
-                                cate.color as unknown as Color
-                            ).toHexString(),
-                            borderColor: (
-                                cate.color as unknown as Color
-                            ).toHexString(),
+                            color: _.isString(cate.color)
+                                ? cate.color
+                                : (
+                                      cate.color as unknown as Color
+                                  ).toHexString(),
+                            borderColor: _.isString(cate.color)
+                                ? cate.color
+                                : (
+                                      cate.color as unknown as Color
+                                  ).toHexString(),
                         };
                     },
                 );
@@ -40,9 +44,11 @@ const DataForm = (props: PropsType) => {
                         return {
                             ...cate,
                             id: cate.id ?? idx,
-                            lineColor: (
-                                cate.lineColor as unknown as Color
-                            )?.toHexString(),
+                            lineColor: _.isString(cate.lineColor)
+                                ? cate.lineColor
+                                : (
+                                      cate.lineColor as unknown as Color
+                                  )?.toHexString(),
                         };
                     },
                 );

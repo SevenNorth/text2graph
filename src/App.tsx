@@ -24,6 +24,8 @@ const App = () => {
     const anno = useRef<Annotator>();
     const graph = useRef<Graph>();
     const annoData = useRef<IAnnoData>(defalutData);
+    const idMap = useRef<Record<string | number, string | number>>();
+    const nodeColorMap = useRef<Record<string | number, string>>();
 
     const { message, modal } = AntdApp.useApp();
 
@@ -57,13 +59,15 @@ const App = () => {
         if (graph.current) {
             return;
         }
-        const data = annoDataToGraphData(
+        const [data, entityIdMap, nodeColor] = annoDataToGraphData(
             defalutData.content,
             defalutData.labelCategories,
             defalutData.connectionCategories,
             defalutData.labels,
             defalutData.connections,
         );
+        idMap.current = entityIdMap;
+        nodeColorMap.current = nodeColor;
         graph.current = new Graph({
             container: 'graph',
             data,
@@ -79,6 +83,7 @@ const App = () => {
             },
             edge: {
                 type: 'line',
+                // type: 'cubic',
                 style: {
                     labelText: (d) => d.name as string,
                     endArrow: true,
@@ -159,11 +164,36 @@ const App = () => {
     };
 
     const onLabelRightClicked = (id: number, _evt: MouseEvent) => {
+        const c = anno.current?.store.labelRepo.get(id);
+        let hasMore = false;
+        if (anno.current && c) {
+            const entityName = annoData.current.content.slice(
+                c.startIndex,
+                c.endIndex,
+            );
+            for (const item of anno.current.store.labelRepo) {
+                const itemName = annoData.current.content.slice(
+                    item[1].startIndex,
+                    item[1].endIndex,
+                );
+                if (
+                    itemName === entityName &&
+                    c.startIndex !== item[1].startIndex &&
+                    c.endIndex !== item[1].endIndex
+                ) {
+                    hasMore = true;
+                    break;
+                }
+            }
+        }
+
         modal.confirm({
             title: '删除标注',
             content: '确定删除该标注？',
             onOk() {
                 anno.current?.applyAction(Action.Label.Delete(id));
+                !hasMore && deleteNode(idMap.current?.[id] ?? id);
+                delete idMap.current?.[id];
             },
         });
     };
@@ -172,13 +202,36 @@ const App = () => {
             title: '删除关系',
             content: '确定删除该关系？',
             onOk() {
-                anno.current?.applyAction(Action.Connection.Delete(id));
+                const c = anno.current?.store.connectionRepo.get(id);
+                if (c) {
+                    const edgeId = `${c.fromId}---${c.categoryId}---${c.toId}`;
+                    anno.current?.applyAction(Action.Connection.Delete(id));
+                    deleteEdge(edgeId);
+                }
             },
         });
     };
 
+    const deleteEdge = (id: number | string) => {
+        graph.current?.removeEdgeData([String(id)]);
+        graph.current?.draw();
+    };
+    const deleteNode = (id: number | string) => {
+        graph.current?.removeNodeData([String(id)]);
+        graph.current?.draw();
+    };
+
     const handleAnnoDataChange = (data: IAnnoData) => {
         initAnnotator({ ...data, labels: [], connections: [] });
+        const [d, entityIdMap, nodeColor] = annoDataToGraphData(
+            data.content,
+            data.labelCategories,
+            data.connectionCategories,
+            data.labels || [],
+            data.connections || [],
+        );
+        idMap.current = entityIdMap;
+        nodeColorMap.current = nodeColor;
         annoData.current = data;
         graph.current?.clear();
     };

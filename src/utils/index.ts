@@ -13,7 +13,11 @@ const annoDataToGraphData = (
     connectionCategories: IAnnoConnectionCate[],
     labels: IAnnoLabel[],
     connections: IAnnoConnection[],
-): GraphData => {
+): [
+    GraphData,
+    Record<string | number, string | number>,
+    Record<string | number, string>,
+] => {
     const NodeColorMap: Record<string | number, string> = {};
     const EdgeLabelMap: Record<string | number, string> = {};
     const EntityIdMap: Record<string | number, string | number> = {};
@@ -52,19 +56,21 @@ const annoDataToGraphData = (
                 source: EntityIdMap[c.fromId].toString(),
                 target: EntityIdMap[c.toId].toString(),
                 name: EdgeLabelMap[c.categoryId],
-                id: `${EntityIdMap[c.fromId]}---${c.categoryId}---${
-                    EntityIdMap[c.toId]
-                }`,
+                id: `${c.fromId}---${c.categoryId}---${c.toId}`,
             };
             return edge;
         }),
         'id',
     );
 
-    return {
-        nodes,
-        edges,
-    };
+    return [
+        {
+            nodes,
+            edges,
+        },
+        EntityIdMap,
+        NodeColorMap,
+    ];
 };
 
 export { annoDataToGraphData };
