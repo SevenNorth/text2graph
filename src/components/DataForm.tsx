@@ -2,6 +2,7 @@ import { Button, ColorPicker, Flex, Form, Input, Space } from 'antd';
 import { IAnnoData } from '../type';
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import _ from 'lodash';
+import { Color } from 'antd/es/color-picker';
 
 interface PropsType {
     data: IAnnoData;
@@ -24,6 +25,12 @@ const DataForm = (props: PropsType) => {
                         return {
                             ...cate,
                             id: cate.id ?? idx,
+                            color: (
+                                cate.color as unknown as Color
+                            ).toHexString(),
+                            borderColor: (
+                                cate.color as unknown as Color
+                            ).toHexString(),
                         };
                     },
                 );
@@ -33,6 +40,9 @@ const DataForm = (props: PropsType) => {
                         return {
                             ...cate,
                             id: cate.id ?? idx,
+                            lineColor: (
+                                cate.lineColor as unknown as Color
+                            )?.toHexString(),
                         };
                     },
                 );
@@ -106,7 +116,7 @@ const DataForm = (props: PropsType) => {
                                             },
                                         ]}
                                     >
-                                        <ColorPicker showText />
+                                        <ColorPicker showText format="hex" />
                                     </Form.Item>
                                     <Form.Item>
                                         <CloseOutlined
