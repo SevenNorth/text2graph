@@ -479,9 +479,9 @@ const App = () => {
                             >
                                 输入文本及配置分类
                             </Button>
-                            <Button type="primary">导出分类数据</Button>
-                            <Button type="primary">导出标注数据</Button>
-                            <Button
+                            {/* <Button type="primary">导出分类数据</Button>
+                            <Button type="primary">导出标注数据</Button> */}
+                            {/* <Button
                                 type="primary"
                                 onClick={async () => {
                                     const url = await graph.current?.toDataURL({
@@ -498,7 +498,7 @@ const App = () => {
                                 }}
                             >
                                 导出图谱数据
-                            </Button>
+                            </Button> */}
                         </Space>
                     </Flex>
                 </Layout.Header>
