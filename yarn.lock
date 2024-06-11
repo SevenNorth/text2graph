@@ -200,10 +200,10 @@
     "@antv/util" "^3.3.5"
     tslib "^2.5.3"
 
-"@antv/g6@^5.0.0-beta.38":
-  version "5.0.0-beta.38"
-  resolved "https://registry.npmmirror.com/@antv/g6/-/g6-5.0.0-beta.38.tgz#8a46862aaa40b4132cf47ef5587c7baef6ec81eb"
-  integrity sha512-+a8WaclgF8MMHthM8xoVyrUnxt8DuXyI5wCNznd2JamZs8BsvOeguz8Gg/3V0Q9xl9zG+unKNZAB1gNPuDRKLg==
+"@antv/g6@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.npmmirror.com/@antv/g6/-/g6-5.0.1.tgz#53c89b6b67d647e0dba8adc57515a84249e2f2aa"
+  integrity sha512-++j83+ytG+WWTaOAovqZVB/qt6ADOTT221uezdPqwLu0oduXJLY4uGyp+q3uILQidGa3QlPAuIQfhEpG+N0WWw==
   dependencies:
     "@antv/component" "^2.0.1"
     "@antv/event-emitter" "^0.1.3"
