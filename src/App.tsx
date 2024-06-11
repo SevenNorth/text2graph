@@ -250,6 +250,45 @@ const App = () => {
                 anno.current?.applyAction(
                     Action.Label.Update(itemId as number, cateId as number),
                 );
+                const c = anno.current?.store.labelRepo.get(itemId as number);
+                if (anno.current && c) {
+                    const sameEntityIds: number[] = [];
+                    const entityName = annoData.current.content.slice(
+                        c.startIndex,
+                        c.endIndex,
+                    );
+                    for (const item of anno.current.store.labelRepo) {
+                        const itemName = annoData.current.content.slice(
+                            item[1].startIndex,
+                            item[1].endIndex,
+                        );
+
+                        if (
+                            itemName === entityName &&
+                            c.startIndex !== item[1].startIndex &&
+                            c.endIndex !== item[1].endIndex
+                        ) {
+                            sameEntityIds.push(item[1].id as number);
+                        }
+                    }
+                    _.each(sameEntityIds, (id) => {
+                        anno.current?.applyAction(
+                            Action.Label.Update(id as number, cateId as number),
+                        );
+                    });
+                }
+                graph.current?.updateNodeData([
+                    {
+                        id: String(
+                            idMap.current?.[String(itemId)] ??
+                                (itemId as string),
+                        ),
+                        style: {
+                            fill: nodeColorMap.current?.[cateId as number],
+                        },
+                    },
+                ]);
+                graph.current?.draw();
             }
         } else if (cateType === 'connection') {
             if (_.isUndefined(itemId) && idxs) {
@@ -261,12 +300,59 @@ const App = () => {
                     ),
                 );
             } else {
-                anno.current?.applyAction(
-                    Action.Connection.Update(
-                        itemId as number,
-                        cateId as number,
-                    ),
+                const c = anno.current?.store.connectionRepo.get(
+                    itemId as number,
                 );
+
+                const newText = annoData.current.connectionCategories.find(
+                    (c) => c.id === cateId,
+                )?.text;
+
+                if (anno.current && c) {
+                    const sameRelations: Array<{
+                        id: number;
+                        fromId: number;
+                        toId: number;
+                    }> = [];
+                    for (const item of anno.current.store.connectionRepo) {
+                        if (
+                            c.categoryId === item[1].categoryId &&
+                            idMap.current?.[c.fromId] ===
+                                idMap.current?.[item[1].fromId] &&
+                            idMap.current?.[c.toId] ===
+                                idMap.current?.[item[1].toId]
+                        ) {
+                            sameRelations.push({
+                                id: item[1].id as number,
+                                fromId: item[1].fromId as number,
+                                toId: item[1].toId as number,
+                            });
+                        }
+                    }
+                    _.each(sameRelations, (r) => {
+                        anno.current?.applyAction(
+                            Action.Connection.Update(
+                                r.id as number,
+                                cateId as number,
+                            ),
+                        );
+                        const rmId = `${r.fromId}---${c.categoryId}---${r.toId}`;
+                        const addId = `${r.fromId}---${cateId}---${r.toId}`;
+                        graph.current?.removeEdgeData([rmId]);
+                        graph.current?.addEdgeData([
+                            {
+                                id: addId,
+                                source:
+                                    idMap.current?.[c.fromId].toString() || '',
+                                target:
+                                    idMap.current?.[c.toId].toString() || '',
+                                name: newText,
+                            },
+                        ]);
+                    });
+
+                    graph.current?.draw();
+                }
             }
         }
         initState();
